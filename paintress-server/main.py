@@ -2,10 +2,12 @@
 
 import os
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
+import os
 
 from app.config import settings
 from app.database import engine, Base
@@ -54,9 +56,12 @@ if not settings.debug:
 # Include routers
 app.include_router(auth.router, prefix="/api/v1")
 
+# Serve static files
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 
 # Health check endpoint
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
     """Health check endpoint."""
     from app.database import test_database_connection
@@ -70,7 +75,7 @@ async def health_check():
     }
 
 
-@app.get("/")
+@app.get("/api/root")
 async def root():
     """Root endpoint."""
     return {

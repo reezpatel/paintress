@@ -68,9 +68,10 @@ A REST API for a notes application with client-side encryption, built with FastA
    ```
 
 5. **Access the API**
-   - API: http://localhost:8000
-   - Documentation: http://localhost:8000/docs
-   - Health Check: http://localhost:8000/health
+   - Frontend: http://localhost:8000 (serves static content)
+   - API Documentation: http://localhost:8000/docs
+   - API Health Check: http://localhost:8000/api/health
+   - API Root: http://localhost:8000/api/root
 
 ## API Endpoints
 
