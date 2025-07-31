@@ -30,7 +30,6 @@ def create_database_engine():
             pool_pre_ping=True,
             pool_recycle=3600,
             echo=settings.debug,
-            connect_args={"options": "-c search_path=paintress"},
         )
     else:
         # Generic configuration

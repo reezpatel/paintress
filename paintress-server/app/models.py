@@ -12,7 +12,6 @@ class User(Base):
     """User model for authentication and profile data."""
 
     __tablename__ = "users"
-    __table_args__ = {"schema": "paintress"}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String, unique=True, index=True, nullable=False)
@@ -36,12 +35,9 @@ class Book(Base):
     """Book model for organizing notes."""
 
     __tablename__ = "books"
-    __table_args__ = {"schema": "paintress"}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(
-        String, ForeignKey("paintress.users.id", ondelete="CASCADE"), nullable=False
-    )
+    user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
     icon = Column(String, nullable=True)
@@ -58,16 +54,13 @@ class Note(Base):
     """Note model with encryption support and hierarchical structure."""
 
     __tablename__ = "notes"
-    __table_args__ = {"schema": "paintress"}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    book_id = Column(
-        String, ForeignKey("paintress.books.id", ondelete="CASCADE"), nullable=False
-    )
+    book_id = Column(String, ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     icon = Column(String, nullable=True)
     parent_note_id = Column(
-        String, ForeignKey("paintress.notes.id", ondelete="SET NULL"), nullable=True
+        String, ForeignKey("notes.id", ondelete="SET NULL"), nullable=True
     )
     is_encrypted = Column(Boolean, default=False)
     public_key = Column(Text, nullable=True)  # For client-side encryption
@@ -86,19 +79,16 @@ class Node(Base):
     """Node model for versioned note content."""
 
     __tablename__ = "nodes"
-    __table_args__ = {"schema": "paintress"}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    note_id = Column(
-        String, ForeignKey("paintress.notes.id", ondelete="CASCADE"), nullable=False
-    )
+    note_id = Column(String, ForeignKey("notes.id", ondelete="CASCADE"), nullable=False)
     version_id = Column(Integer, nullable=False)
     node_index = Column(Integer, nullable=False)
     node_content = Column(
         Text, nullable=False
     )  # Encrypted content if note.is_encrypted=True
     created_at = Column(DateTime, default=datetime.utcnow)
-    created_by = Column(String, ForeignKey("paintress.users.id"), nullable=False)
+    created_by = Column(String, ForeignKey("users.id"), nullable=False)
 
     # Relationships
     note = relationship("Note", back_populates="nodes")
@@ -109,12 +99,9 @@ class Attachment(Base):
     """Attachment model for file uploads."""
 
     __tablename__ = "attachments"
-    __table_args__ = {"schema": "paintress"}
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(
-        String, ForeignKey("paintress.users.id", ondelete="CASCADE"), nullable=False
-    )
+    user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     file_path = Column(String, nullable=False)
     original_filename = Column(String, nullable=False)
     mime_type = Column(String, nullable=False)
