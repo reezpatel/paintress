@@ -174,3 +174,23 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--sidebar-border);
+  border-radius: 20px;
+  border: transparent;
+}
+
+div.app-editor {
+  @apply max-w-5xl mx-auto;
+}
+
+div.app-editor div[contenteditable="true"] {
+  @apply p-4 outline-none min-h-[calc(100dvh-106px)];
+}

@@ -13,8 +13,38 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Editor } from "@/components/editor/editor";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  MoreVerticalIcon,
+  Download,
+  Upload,
+  MoveRight,
+  Trash,
+  Badge,
+  LucideCode,
+  Edit,
+  Menu,
+  Notebook,
+} from "lucide-react";
 
 export const Shell = () => {
+  const handleExport = () => {
+    // TODO: Implement export functionality
+    console.log("Export clicked");
+  };
+
+  const handleImport = () => {
+    // TODO: Implement import functionality
+    console.log("Import clicked");
+  };
+
   return (
     <SidebarProvider
       style={
@@ -25,31 +55,60 @@ export const Shell = () => {
     >
       <AppSidebar />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
+        <header className="bg-sidebar sticky top-0 flex shrink-0 items-center gap-2 border-b p-4 py-2.5 pr-2">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
-            className="mr-2 data-[orientation=vertical]:h-4"
+            className="data-[orientation=vertical]:h-4 mr-1"
           />
+
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbItem>
                 <BreadcrumbLink href="#">All Inboxes</BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbPage>Inbox</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+
+          <div className="flex-1 flex items-center justify-end">
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVerticalIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleImport}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  <span>Import</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExport}>
+                  <Download className="h-4 w-4 mr-2" />
+                  <span>Export</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExport}>
+                  <MoveRight className="h-4 w-4 mr-2" />
+                  <span>Move</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={handleExport}>
+                  <Trash className="h-4 w-4 mr-2" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
-            />
-          ))}
+        <div className="flex flex-1 flex-col">
+          <Editor />
         </div>
       </SidebarInset>
     </SidebarProvider>
