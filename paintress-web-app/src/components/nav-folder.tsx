@@ -1,4 +1,4 @@
-import { ChevronRight, MoreHorizontal, MoreVertical, Plus } from "lucide-react";
+import { ChevronRight, MoreVertical, Plus } from "lucide-react";
 
 import {
   Collapsible,
@@ -8,7 +8,6 @@ import {
 import {
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,

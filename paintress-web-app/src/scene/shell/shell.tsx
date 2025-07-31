@@ -27,11 +27,7 @@ import {
   Upload,
   MoveRight,
   Trash,
-  Badge,
-  LucideCode,
   Edit,
-  Menu,
-  Notebook,
 } from "lucide-react";
 
 export const Shell = () => {
