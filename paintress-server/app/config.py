@@ -41,9 +41,6 @@ class Settings(BaseSettings):
     s3_url: str = ""
     local_file_path: str = "./data"
 
-    # CORS Settings
-    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8080"]
-
     model_config = {"env_file": ".env", "case_sensitive": False}
 
 

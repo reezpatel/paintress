@@ -252,7 +252,6 @@ docker run -p 8000:8000 notes-app
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID | Optional |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Optional |
 | `DEBUG` | Enable debug mode | `False` |
-| `ALLOWED_ORIGINS` | CORS allowed origins | `http://localhost:3000,http://localhost:8080` |
 
 ## Security Features
 
