@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  paintress-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/paintress.db
+      - UPLOAD_DIRECTORY=./uploads
+      - LOCAL_FILE_PATH=./data
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+    env_file:
+      - paintress-server/.env
+    volumes:
+      - paintress_data:/app/data
+      - paintress_uploads:/app/uploads
+      - ./paintress-server:/app
+      - ./paintress-web-app/dist:/app/static
+    restart: unless-stopped
+    networks:
+      - paintress-network
+    command: ["python", "main.py"]
+
+volumes:
+  paintress_data:
+    driver: local
+  paintress_uploads:
+    driver: local
+
+networks:
+  paintress-network:
+    driver: bridge

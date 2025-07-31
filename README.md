@@ -55,7 +55,78 @@
 - **Python** 3.13+ and **uv** (recommended) or **pip**
 - **PostgreSQL** (optional, SQLite for development)
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker Compose (Recommended)
+
+#### PostgreSQL Version (Full-featured)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd paintress
+
+# Set up environment variables
+cp paintress-server/.env.example paintress-server/.env
+# Edit paintress-server/.env with your configuration
+
+# Start all services with Docker Compose
+docker-compose up -d
+
+# Access the application
+open http://localhost:8000
+
+# View logs
+docker-compose logs -f paintress
+
+# Stop services
+docker-compose down
+```
+
+#### SQLite Version (Simplified)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd paintress
+
+# Set up environment variables
+cp paintress-server/.env.sqlite.example paintress-server/.env
+# Edit paintress-server/.env with your configuration
+
+# Start with SQLite (no external database needed)
+docker-compose -f docker-compose.sqlite.yml up -d
+
+# Access the application
+open http://localhost:8000
+
+# View logs
+docker-compose -f docker-compose.sqlite.yml logs -f paintress
+
+# Stop services
+docker-compose -f docker-compose.sqlite.yml down
+```
+
+#### External Services Version (Production)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd paintress
+
+# Set up environment variables
+cp paintress-server/.env.external.example paintress-server/.env
+# Edit paintress-server/.env with your external PostgreSQL and S3 configuration
+
+# Start with external services
+docker-compose -f docker-compose.external.yml up -d
+
+# Access the application
+open http://localhost:8000
+
+# View logs
+docker-compose -f docker-compose.external.yml logs -f paintress
+
+# Stop services
+docker-compose -f docker-compose.external.yml down
+```
+
+### Option 2: Docker (Standalone)
 
 ```bash
 # Clone the repository
