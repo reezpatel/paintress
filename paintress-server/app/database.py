@@ -7,16 +7,6 @@ from sqlalchemy.pool import StaticPool
 from .config import settings
 
 
-def create_schema_if_not_exists(engine):
-    """Create paintress schema if it doesn't exist."""
-    try:
-        with engine.connect() as connection:
-            connection.execute(text("CREATE SCHEMA IF NOT EXISTS paintress"))
-            connection.commit()
-    except Exception as e:
-        print(f"Warning: Could not create schema: {e}")
-
-
 def create_database_engine():
     """Create database engine with appropriate configuration."""
     database_url = settings.database_url
@@ -42,8 +32,6 @@ def create_database_engine():
             echo=settings.debug,
             connect_args={"options": "-c search_path=paintress"},
         )
-        # Create schema if it doesn't exist
-        create_schema_if_not_exists(engine)
     else:
         # Generic configuration
         engine = create_engine(database_url, pool_pre_ping=True, echo=settings.debug)
