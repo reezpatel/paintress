@@ -2,6 +2,16 @@
 
 > A modern, encrypted notes application with a beautiful React frontend and robust FastAPI backend
 
+<div align="center">
+  
+  ![Development Status](https://img.shields.io/badge/Status-In%20Development-orange.svg)
+  ![Alpha Release](https://img.shields.io/badge/Alpha%20Release-Mid%20August%202024-blue.svg)
+  
+  **⚠️ Currently in Development**  
+  *Alpha version coming mid-August 2025*
+  
+</div>
+
 [![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://reactjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178c6.svg)](https://typescriptlang.org)
