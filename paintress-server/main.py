@@ -49,10 +49,6 @@ app.add_middleware(
 )
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
-
-if not settings.debug:
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
-
 # Include routers
 app.include_router(auth.router, prefix="/api/v1")
 
