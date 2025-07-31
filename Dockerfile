@@ -11,13 +11,13 @@ COPY paintress-server/pyproject.toml ./paintress-server/
 
 # Install Node.js dependencies
 WORKDIR /app/paintress-web-app
-RUN npm ci --only=production
+RUN yarn install --frozen-lockfile --production
 
 # Copy frontend source code
 COPY paintress-web-app/ .
 
 # Build the React application
-RUN npm run build
+RUN yarn build
 
 # Stage 2: Python backend with built frontend
 FROM python:3.13-slim
