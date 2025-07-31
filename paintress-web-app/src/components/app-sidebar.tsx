@@ -1,17 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Home,
-  Inbox,
-  Plus,
-  Sparkle,
-  ListTree,
-  ListTodo,
-  ChevronRight,
-  Folder,
-  File,
-} from "lucide-react";
+import { Home, Inbox, Plus, Sparkle, ListTree, ListTodo } from "lucide-react";
 
 import { NavUser } from "@/components/nav-user";
 import {
@@ -29,11 +19,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "./ui/separator";
 import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
 import { NavFolder } from "./nav-folder";
 import { Button } from "./ui/button";
 
