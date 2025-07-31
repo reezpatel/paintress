@@ -29,13 +29,7 @@ class Settings(BaseSettings):
 
     # File Upload Settings
     max_file_size: int = 10485760  # 10MB
-    allowed_file_types: List[str] = [
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "text/plain",
-        "application/pdf",
-    ]
+
     upload_directory: str = "./uploads"
 
     # Storage Settings
