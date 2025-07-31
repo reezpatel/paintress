@@ -11,7 +11,7 @@ COPY paintress-server/pyproject.toml ./paintress-server/
 
 # Install Node.js dependencies
 WORKDIR /app/paintress-web-app
-RUN yarn install --frozen-lockfile --production
+RUN yarn install --frozen-lockfile
 
 # Copy frontend source code
 COPY paintress-web-app/ .
