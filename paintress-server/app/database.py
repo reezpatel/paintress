@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.schema import CreateSchema
 from .config import settings
 
 
@@ -29,6 +30,7 @@ def create_database_engine():
             max_overflow=20,
             pool_pre_ping=True,
             pool_recycle=3600,
+            schema_translate_map={None: "paintress"},
             echo=settings.debug,
         )
     else:
