@@ -8,8 +8,6 @@ import {
   Sparkle,
   ListTree,
   ListTodo,
-  CloudOff,
-  RefreshCcw,
   Box,
 } from "lucide-react";
 

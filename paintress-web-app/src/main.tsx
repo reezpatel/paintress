@@ -8,6 +8,7 @@ import { initDB } from "react-indexed-db-hook";
 import { DBConfig } from "./lib/db/db-config";
 import { AuthProvider } from "./providers/auth-provider";
 import { SettingScene } from "./scene/setting/setting-scene";
+import { Editor } from "./components/editor/editor";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,11 @@ initDB(DBConfig);
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <Shell />,
+    element: (
+      <Shell>
+        <Editor />
+      </Shell>
+    ),
   },
   {
     path: "/settings",
