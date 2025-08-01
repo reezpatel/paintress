@@ -9,6 +9,7 @@ from ..schemas import (
     UserCreate,
     UserLogin,
     GoogleLogin,
+    ClerkLogin,
     Token,
     MessageResponse,
     UserResponse,
@@ -21,11 +22,17 @@ from ..auth import (
     create_user,
     get_user_by_email,
     get_user_by_google_id,
+    get_user_by_clerk_id,
 )
 from ..google_auth import (
     verify_google_token,
     create_or_update_google_user,
     GoogleAuthError,
+)
+from ..clerk_auth import (
+    verify_clerk_token,
+    create_or_update_clerk_user,
+    ClerkAuthError,
 )
 from ..dependencies import security
 from ..config import settings
@@ -76,8 +83,12 @@ async def login_user(user_credentials: UserLogin, db: Session = Depends(get_db))
         )
 
     # Create tokens
-    access_token = create_access_token(data={"sub": user.email})
-    refresh_token = create_refresh_token(data={"sub": user.email})
+    access_token = create_access_token(
+        data={"sub": user.email, "name": f"{user.first_name} {user.last_name}"}
+    )
+    refresh_token = create_refresh_token(
+        data={"sub": user.email, "name": f"{user.first_name} {user.last_name}"}
+    )
 
     return {
         "access_token": access_token,
@@ -162,6 +173,52 @@ async def refresh_access_token(
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
+
+
+@router.post("/clerk-login", response_model=Token)
+async def clerk_login(clerk_data: ClerkLogin, db: Session = Depends(get_db)):
+    """Login or register user with Clerk session token."""
+    try:
+        # Verify Clerk token
+        user_info = verify_clerk_token(clerk_data.clerk_token)
+        if not user_info:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Clerk token"
+            )
+
+        # Check if user exists by Clerk ID
+        user = get_user_by_clerk_id(db, user_info["clerk_id"])
+
+        if not user:
+            # Check if user exists by email
+            user = get_user_by_email(db, user_info["email"])
+            if user and not user.clerk_id:
+                # Link existing account with Clerk
+                user.clerk_id = user_info["clerk_id"]
+                db.commit()
+                db.refresh(user)
+            else:
+                # Create new user
+                user_data = create_or_update_clerk_user(user_info)
+                user = create_user(db, user_data)
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
+            )
+
+        # Create tokens
+        access_token = create_access_token(data={"sub": user.email})
+        refresh_token = create_refresh_token(data={"sub": user.email})
+
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+        }
+
+    except ClerkAuthError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
 @router.post("/logout", response_model=MessageResponse)

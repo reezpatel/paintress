@@ -30,7 +30,7 @@ import {
   Edit,
 } from "lucide-react";
 
-export const Shell = () => {
+export const Shell = ({ children }: { children: React.ReactNode }) => {
   const handleExport = () => {
     // TODO: Implement export functionality
     console.log("Export clicked");
@@ -46,6 +46,7 @@ export const Shell = () => {
       style={
         {
           "--sidebar-width": "350px",
+          "--sidebar-width-icon": "50px",
         } as React.CSSProperties
       }
     >
@@ -103,9 +104,7 @@ export const Shell = () => {
             </DropdownMenu>
           </div>
         </header>
-        <div className="flex flex-1 flex-col">
-          <Editor />
-        </div>
+        <div className="flex flex-1 flex-col">{children || <Editor />}</div>
       </SidebarInset>
     </SidebarProvider>
   );

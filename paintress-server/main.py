@@ -11,17 +11,35 @@ import os
 
 from app.config import settings
 from app.database import engine, Base
-from app.routers import auth
+from app.routers import auth, config
+
+
+import subprocess
+import sys
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
-    # Create database tables
-    Base.metadata.create_all(bind=engine)
 
-    # Create upload directory if it doesn't exist
-    os.makedirs(settings.upload_directory, exist_ok=True)
+    # Run database migrations
+    try:
+        print("🔄 Running database migrations...")
+        result = subprocess.run(
+            [sys.executable, "-m", "alembic", "upgrade", "head"],
+            capture_output=True,
+            text=True,
+            cwd=os.getcwd(),
+        )
+        if result.returncode == 0:
+            print("✅ Database migrations completed successfully")
+        else:
+            print(f"⚠️  Migration warning: {result.stderr}")
+    except Exception as e:
+        print(f"⚠️  Could not run migrations: {e}")
+
+    if not settings.enable_s3_storage:
+        os.makedirs(settings.upload_directory, exist_ok=True)
 
     yield
 
@@ -35,8 +53,8 @@ app = FastAPI(
     version=settings.app_version,
     description="A REST API for a notes application with client-side encryption",
     lifespan=lifespan,
-    docs_url="/docs" if settings.debug else None,
-    redoc_url="/redoc" if settings.debug else None,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 # Add middleware
@@ -51,6 +69,7 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Include routers
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(config.router, prefix="/api/v1")
 
 # Serve static files
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

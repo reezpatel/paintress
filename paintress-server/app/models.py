@@ -17,6 +17,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=True)  # Nullable for Google OAuth users
     google_id = Column(String, unique=True, nullable=True)
+    clerk_id = Column(String, unique=True, nullable=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

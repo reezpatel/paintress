@@ -90,6 +90,11 @@ def get_user_by_google_id(db: Session, google_id: str) -> Optional[User]:
     return db.query(User).filter(User.google_id == google_id).first()
 
 
+def get_user_by_clerk_id(db: Session, clerk_id: str) -> Optional[User]:
+    """Get user by Clerk ID."""
+    return db.query(User).filter(User.clerk_id == clerk_id).first()
+
+
 def create_user(db: Session, user_data: dict) -> User:
     """Create a new user."""
     if user_data.get("password"):

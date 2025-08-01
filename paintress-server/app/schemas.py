@@ -13,8 +13,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: Optional[str] = None
-    google_id: Optional[str] = None
+    password: str
 
 
 class UserUpdate(BaseModel):
@@ -156,6 +155,16 @@ class UserLogin(BaseModel):
 
 class GoogleLogin(BaseModel):
     google_token: str
+
+
+class ClerkLogin(BaseModel):
+    clerk_token: str
+
+
+class ApplicationConfig(BaseModel):
+    auth_type: str  # "clerk" or "traditional"
+    app_name: str
+    version: str
 
 
 # Response schemas

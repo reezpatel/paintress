@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
+} from "../../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -18,14 +18,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+} from "../../../components/ui/form";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { $api } from "@/lib/fetch";
 
 const registerSchema = z
   .object({
     name: z.string().min(1, "Full name is required"),
-    email: z.string().email("Please enter a valid email address"),
+    email: z.email({ message: "Please enter a valid email address" }),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
@@ -39,16 +40,9 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 interface RegisterDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  isLoading: boolean;
-  onSubmit: (data: RegisterFormData) => void;
 }
 
-export const RegisterDialog = ({
-  open,
-  onOpenChange,
-  isLoading,
-  onSubmit,
-}: RegisterDialogProps) => {
+export const RegisterDialog = ({ open, onOpenChange }: RegisterDialogProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -62,8 +56,22 @@ export const RegisterDialog = ({
     },
   });
 
+  const {
+    mutate: register,
+    isPending,
+    error,
+    data,
+  } = $api.useMutation("post", "/api/v1/auth/register");
+
   const handleSubmit = (data: RegisterFormData) => {
-    onSubmit(data);
+    register({
+      body: {
+        email: data.email,
+        password: data.password,
+        first_name: data.name.split(" ")[0],
+        last_name: data.name.split(" ")[1] || "",
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -72,6 +80,28 @@ export const RegisterDialog = ({
     setShowConfirmPassword(false);
     onOpenChange(false);
   };
+
+  if (data?.is_active) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Account created</DialogTitle>
+            <DialogDescription className="py-7">
+              Your account has been created. Please login with your email and
+              password.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button className="w-full" onClick={handleCancel}>
+              Continue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -204,20 +234,23 @@ export const RegisterDialog = ({
               )}
             />
 
+            {error && (
+              <div className="text-red-500">
+                {error?.detail as unknown as string}
+              </div>
+            )}
+
             <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-5">
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleCancel}
-                disabled={isLoading}
+                disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={!form.formState.isValid || isLoading}
-              >
-                {isLoading ? (
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   "Create account"

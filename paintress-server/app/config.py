@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     google_client_secret: str = ""
 
+    # Clerk Authentication
+    enable_clerk: bool = False
+    clerk_publishable_key: str = ""
+    clerk_secret_key: str = ""
+
     # Application Settings
     app_name: str = "Notes App API"
     app_version: str = "1.0.0"

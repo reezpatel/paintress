@@ -1,7 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Home, Inbox, Plus, Sparkle, ListTree, ListTodo } from "lucide-react";
+import {
+  Home,
+  Inbox,
+  Plus,
+  Sparkle,
+  ListTree,
+  ListTodo,
+  CloudOff,
+  RefreshCcw,
+  Box,
+} from "lucide-react";
 
 import { NavUser } from "@/components/nav-user";
 import {
@@ -21,6 +31,7 @@ import { Separator } from "./ui/separator";
 import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 import { NavFolder } from "./nav-folder";
 import { Button } from "./ui/button";
+import { authStore } from "@/lib/store/auth.store";
 
 // This is sample data
 const data = {
@@ -288,18 +299,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   );
   const { setOpen } = useSidebar();
 
+  const isOffline = authStore((state) => state.isOffline);
+
   return (
-    <Sidebar
-      collapsible="icon"
-      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row"
-      {...props}
-    >
+    <Sidebar collapsible="icon" className="overflow-hidden flex-row" {...props}>
       {/* This is the first sidebar */}
       {/* We disable collapsible and adjust width to icon. */}
       {/* This will make the sidebar appear as icons. */}
       <Sidebar
         collapsible="none"
-        className="w-[calc(var(--sidebar-width-icon)+1px)]! border-r"
+        className="w-[calc(3.8rem+1px)]! md:w-[calc(3rem+1px)]! border-r"
       >
         <SidebarHeader>
           <SidebarMenu>
@@ -390,7 +399,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          <NavUser />
         </SidebarFooter>
       </Sidebar>
 
@@ -398,7 +407,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {/* We disable collapsible and let it fill remaining space */}
       <Sidebar
         collapsible="none"
-        className="hidden flex-1 md:flex w-[calc(var(--sidebar-width)-var(--sidebar-width-icon))]! border-r"
+        className="flex-1 md:flex w-[calc(var(--sidebar-width)-3.8rem)]! md:w-[calc(var(--sidebar-width)-3rem)]! border-r"
       >
         <SidebarHeader className="gap-3.5 border-b p-3 pt-2">
           <div className="flex items-center justify-between">
@@ -436,83 +445,58 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarInput placeholder="Type to search..." />
         </SidebarHeader>
 
-        <SidebarContent className="w-[calc(var(--sidebar-width)-var(--sidebar-width-icon))]!">
-          {viewMode === "list" && (
-            <SidebarGroup className="px-0">
-              <SidebarGroupContent>
-                {mails.map((mail) => (
-                  <a
-                    href="#"
-                    key={mail.email}
-                    className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0"
-                  >
-                    <div className="flex w-full items-center gap-2">
-                      <span>{mail.name}</span>{" "}
-                      <span className="ml-auto text-xs">{mail.date}</span>
-                    </div>
-                    <span className="font-medium">{mail.subject}</span>
-                    <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
-                      {mail.teaser}
-                    </span>
-                  </a>
-                ))}
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
-          {viewMode === "tree" && <NavFolder workspaces={data2.workspaces} />}
-
-          {/* 
-
-          <SidebarGroup>
-            <SidebarGroupLabel>Files</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {data.tree.map((item, index) => (
-                  <Tree key={index} item={item} />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup> */}
+        <SidebarContent className="w-[calc(var(--sidebar-width)-3.8rem)]! md:w-[calc(var(--sidebar-width)-3rem)]!">
+          <div>
+            {viewMode === "list" && (
+              <SidebarGroup className="px-0">
+                <SidebarGroupContent>
+                  {mails.map((mail) => (
+                    <a
+                      href="#"
+                      key={mail.email}
+                      className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0"
+                    >
+                      <div className="flex w-full items-center gap-2">
+                        <span>{mail.name}</span>{" "}
+                        <span className="ml-auto text-xs">{mail.date}</span>
+                      </div>
+                      <span className="font-medium">{mail.subject}</span>
+                      <span className="line-clamp-2 max-w-[260px] text-xs whitespace-break-spaces">
+                        {mail.teaser}
+                      </span>
+                    </a>
+                  ))}
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+            {viewMode === "tree" && <NavFolder workspaces={data2.workspaces} />}
+          </div>
         </SidebarContent>
+
+        <div>{isOffline && <OfflineMode />}</div>
       </Sidebar>
     </Sidebar>
   );
 }
 
-// function Tree({ item }: { item: string | any[] }) {
-//   const [name, ...items] = Array.isArray(item) ? item : [item];
-//   if (!items.length) {
-//     return (
-//       <SidebarMenuButton
-//         isActive={name === "button.tsx"}
-//         className="data-[active=true]:bg-transparent"
-//       >
-//         <File />
-//         {name}
-//       </SidebarMenuButton>
-//     );
-//   }
-//   return (
-//     <SidebarMenuItem>
-//       <Collapsible
-//         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-//         defaultOpen={name === "components" || name === "ui"}
-//       >
-//         <CollapsibleTrigger asChild>
-//           <SidebarMenuButton>
-//             <ChevronRight className="transition-transform" />
-//             <Folder />
-//             {name}
-//           </SidebarMenuButton>
-//         </CollapsibleTrigger>
-//         <CollapsibleContent>
-//           <SidebarMenuSub>
-//             {items.map((subItem, index) => (
-//               <Tree key={index} item={subItem} />
-//             ))}
-//           </SidebarMenuSub>
-//         </CollapsibleContent>
-//       </Collapsible>
-//     </SidebarMenuItem>
-//   );
-// }
+export const OfflineMode = () => {
+  const setIsOffline = authStore((state) => state.setIsOffline);
+
+  return (
+    <div className="p-6 border-sidebar-border border-t flex gap-3">
+      <Box className="h-4 w-4" />
+      <p className="text-sm">Evaluation Mode</p>
+
+      <div className="flex-1"> </div>
+
+      <a
+        className="text-sm text-secondary-foreground underline underline-offset-2"
+        onClick={() => {
+          setIsOffline(false);
+        }}
+      >
+        Create Account
+      </a>
+    </div>
+  );
+};
