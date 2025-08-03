@@ -33,10 +33,12 @@ const extensions = [
   }),
 ];
 
-export const Editor = () => {
+export const Editor = ({ content }: { content?: string }) => {
   const editor = useEditor({
     extensions,
-    content: `
+    content:
+      content ||
+      `
 <h2>
   Hi there,
 </h2>

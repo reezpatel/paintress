@@ -14,9 +14,6 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  Heading4,
-  Heading5,
-  Heading6,
   List,
   ListOrdered,
   Code2,
@@ -128,33 +125,6 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
             >
               <Heading3 className="h-4 w-4" />
               <span>Heading 3</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                editor.chain().focus().toggleHeading({ level: 4 }).run()
-              }
-              className={editorState.isHeading4 ? "bg-accent" : ""}
-            >
-              <Heading4 className="h-4 w-4" />
-              <span>Heading 4</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                editor.chain().focus().toggleHeading({ level: 5 }).run()
-              }
-              className={editorState.isHeading5 ? "bg-accent" : ""}
-            >
-              <Heading5 className="h-4 w-4" />
-              <span>Heading 5</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                editor.chain().focus().toggleHeading({ level: 6 }).run()
-              }
-              className={editorState.isHeading6 ? "bg-accent" : ""}
-            >
-              <Heading6 className="h-4 w-4" />
-              <span>Heading 6</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
