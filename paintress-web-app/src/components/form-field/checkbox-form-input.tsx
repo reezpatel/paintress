@@ -2,13 +2,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FormLabel } from "../ui/form";
 import { Checkbox } from "../ui/checkbox";
 
-export const CheckboxFormInput = ({
-  name,
-  label,
-}: {
-  name: string;
-  label: string;
-}) => {
+export const CheckboxFormInput = ({ name, label, disabled }: { name: string; label: string; disabled?: boolean }) => {
   const methods = useFormContext();
 
   return (
@@ -22,6 +16,7 @@ export const CheckboxFormInput = ({
             onCheckedChange={(checked) => {
               field.onChange(checked);
             }}
+            disabled={disabled}
           />
           <FormLabel>{label}</FormLabel>
         </div>

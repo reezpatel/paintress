@@ -17,23 +17,15 @@ import { SidebarGroup } from "@/components/ui/sidebar";
 import { SidebarGroupContent } from "@/components/ui/sidebar";
 import { authStore } from "@/lib/store/auth.store";
 import { bookStore } from "@/lib/store/book.store";
-import {
-  Box,
-  File,
-  Folder,
-  ListTodo,
-  ListTree,
-  Plus,
-  SquareCheck,
-} from "lucide-react";
-import { useMemo, useState } from "react";
+import { Box, Edit3, File, Folder, ListTodo, ListTree, Plus, SquareCheck } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { EmptyState } from "@/components/ui/empty-state";
 import { repoStore } from "@/lib/store/repo.store";
-import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { TreeSidebar } from "./tree-sidebar";
 import { cn } from "@/lib/utils";
+import { noteStore } from "@/lib/store/note-store";
 
 export const BookSidebar = () => {
   const books = bookStore((state) => state.books);
@@ -42,28 +34,30 @@ export const BookSidebar = () => {
   const repo = repoStore((state) => state.repo);
   const navigate = useNavigate();
 
+  const fetchNotes = noteStore((state) => state.fetchNotes);
+  const fetchFolders = noteStore((state) => state.fetchFolders);
+
+  const setShowCreateBook = bookStore((state) => state.setShowCreateBook);
+
+  const notes = noteStore((state) => state.notes);
+  const folders = noteStore((state) => state.folders);
+
+  const refetch = useCallback(() => {
+    fetchNotes();
+    fetchFolders();
+  }, [fetchNotes, fetchFolders]);
+
+  useEffect(() => {
+    refetch();
+  }, [bookId, refetch]);
+
   const book = useMemo(() => {
     return books.find((book) => book.id === bookId);
   }, [books, bookId]);
 
   const [viewMode, setViewMode] = useState<"list" | "tree">("tree");
 
-  const { data: notes, refetch } = useQuery({
-    queryKey: ["notes", bookId],
-    queryFn: () => repo.notes.getNotes(bookId!),
-    enabled: !!bookId,
-  });
-
-  const { data: folders, refetch: refetchFolders } = useQuery({
-    queryKey: ["folders", bookId],
-    queryFn: () => repo.folder.getFolders(bookId!),
-    enabled: !!bookId,
-  });
-
-  const createNewNote = async (
-    folderId = "",
-    type: "note" | "todo" = "note"
-  ) => {
+  const createNewNote = async (folderId = "", type: "note" | "todo" = "note") => {
     if (!bookId) {
       throw new Error("Book ID is required");
     }
@@ -84,42 +78,36 @@ export const BookSidebar = () => {
     const folder = await repo.folder.createFolder(bookId, parentFolderId);
 
     if (folder?.id) {
-      refetchFolders();
+      refetch();
     }
   };
 
   const mappedNotes = useMemo(() => {
     return notes?.map((note) => ({
       ...note,
-      folder_name: folders?.find((folder) => folder.id === note.folder_id)
-        ?.name,
+      folder_name: folders?.find((folder) => folder.id === note.folder_id)?.name,
       updated_at: format(new Date(note.updated_at), "MMM d, yyyy"),
     }));
-  }, [notes]);
+  }, [notes, folders]);
 
   return (
-    <Sidebar
-      collapsible="none"
-      className="flex-1 md:flex w-[calc(var(--sidebar-width)-3.8rem)]! md:w-[calc(var(--sidebar-width)-3rem)]! border-r"
-    >
+    <Sidebar collapsible="none" className="flex-1 md:flex w-[calc(var(--sidebar-width)-3.8rem)]! md:w-[calc(var(--sidebar-width)-3rem)]! border-r">
       <SidebarHeader className="gap-3.5 border-b p-3 pt-2">
         <div className="flex items-center justify-between">
-          <div className="text-foreground text-md font-medium">
+          <div className="text-foreground text-md font-medium group/head">
             {book?.name}
+
+            <Button variant="outline" size="icon" className="ml-2 h-6 w-6 md:opacity-0 group-hover/head:opacity-100 " onClick={() => setShowCreateBook(true, bookId)}>
+              <Edit3 className="size-3" />
+            </Button>
           </div>
 
           <div className="flex items-center gap-2">
             <ButtonGroup>
-              <ButtonGroupItem
-                active={viewMode === "list"}
-                onClick={() => setViewMode("list")}
-              >
+              <ButtonGroupItem active={viewMode === "list"} onClick={() => setViewMode("list")}>
                 <ListTodo className="h-4 w-4" />
               </ButtonGroupItem>
-              <ButtonGroupItem
-                active={viewMode === "tree"}
-                onClick={() => setViewMode("tree")}
-              >
+              <ButtonGroupItem active={viewMode === "tree"} onClick={() => setViewMode("tree")}>
                 <ListTree className="h-4 w-4" />
               </ButtonGroupItem>
             </ButtonGroup>
@@ -193,30 +181,16 @@ export const BookSidebar = () => {
                         }}
                       >
                         <div className="flex w-full items-center gap-2">
-                          <span>{note.folder_name}</span>{" "}
-                          <span className="ml-auto text-xs">
-                            {note.updated_at}
-                          </span>
+                          <span>{note.folder_name}</span> <span className="ml-auto text-xs">{note.updated_at}</span>
                         </div>
                         <span className="font-medium">{note.title}</span>
-                        <span className="line-clamp-2 max-w-[260px] text-xs whitespace-break-spaces">
-                          ...
-                        </span>
+                        <span className="line-clamp-2 max-w-[260px] text-xs whitespace-break-spaces">...</span>
                       </a>
                     ))}
                   </SidebarGroupContent>
                 </SidebarGroup>
               )}
-              {viewMode === "tree" && (
-                <TreeSidebar
-                  notes={notes || []}
-                  folders={folders || []}
-                  refetch={() => {
-                    refetch();
-                    refetchFolders();
-                  }}
-                />
-              )}
+              {viewMode === "tree" && <TreeSidebar notes={notes} folders={folders} refetch={refetch} />}
             </>
           )}
         </div>

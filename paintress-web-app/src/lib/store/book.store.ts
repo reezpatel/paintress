@@ -3,7 +3,8 @@ import type { Book } from "../repo/model";
 
 type BookStore = {
   showCreateBook: boolean;
-  setShowCreateBook: (show: boolean) => void;
+  bookIdToUpdate: string | null;
+  setShowCreateBook: (show: boolean, bookId?: string) => void;
 
   books: Book[];
   setBooks: (books: Book[]) => void;
@@ -11,8 +12,8 @@ type BookStore = {
 
 export const bookStore = create<BookStore>((set) => ({
   showCreateBook: false,
-  setShowCreateBook: (show) => set({ showCreateBook: show }),
-
+  bookIdToUpdate: null,
+  setShowCreateBook: (show, bookId) => set({ showCreateBook: show, bookIdToUpdate: bookId || null }),
   books: [],
   setBooks: (books) => set({ books }),
 }));

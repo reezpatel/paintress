@@ -82,40 +82,22 @@ export interface Repo {
   books: {
     getBooks: () => Promise<Book[]>;
     getBook: (id: string) => Promise<Book | undefined | null>;
-    createBook: (
-      book: Pick<Book, "name" | "icon" | "is_encrypted">
-    ) => Promise<{ id: string }>;
-    updateBook: (
-      book: Pick<Book, "id" | "name" | "icon" | "is_encrypted">
-    ) => Promise<{ id: string }>;
+    createBook: (book: Pick<Book, "name" | "icon" | "is_encrypted">) => Promise<{ id: string }>;
+    updateBook: (id: string, book: Partial<Pick<Book, "name" | "icon">>) => Promise<void>;
     deleteBook: (id: string) => Promise<void>;
   };
   notes: {
     getNotes: (bookId: string) => Promise<Note[]>;
-    getNote: (
-      bookId: string,
-      noteId: string
-    ) => Promise<Note | undefined | null>;
-    createNote: (opt: {
-      bookId: string;
-      folderId: string;
-      type: "note" | "todo";
-    }) => Promise<{ id: string }>;
-    updateFolderIdForNotes: (
-      noteIds: string[],
-      folderId: string
-    ) => Promise<void>;
+    getNote: (bookId: string, noteId: string) => Promise<Note | undefined | null>;
+    createNote: (opt: { bookId: string; folderId: string; type: "note" | "todo" }) => Promise<{ id: string }>;
+    updateFolderIdForNotes: (noteIds: string[], folderId: string) => Promise<void>;
+    updateNote: (noteId: string, note: Partial<Pick<Note, "title" | "frontmatter">>) => Promise<void>;
   };
   folder: {
-    createFolder: (
-      bookId: string,
-      parentFolderId: string
-    ) => Promise<{ id: string }>;
+    createFolder: (bookId: string, parentFolderId: string) => Promise<{ id: string }>;
     getFolders: (bookId: string) => Promise<Folder[]>;
-    updateFolderIdForFolders: (
-      folderIds: string[],
-      parentFolderId: string
-    ) => Promise<void>;
+    updateFolderIdForFolders: (folderIds: string[], parentFolderId: string) => Promise<void>;
+    updateFolder: (folderId: string, folder: Partial<Pick<Folder, "name" | "icon">>) => Promise<void>;
   };
   // folders: {
   //   getFolders: () => Promise<Folder[]>;

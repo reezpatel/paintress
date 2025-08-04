@@ -1,11 +1,5 @@
 import { useEffect, useMemo } from "react";
-import {
-  dragAndDropFeature,
-  hotkeysCoreFeature,
-  keyboardDragAndDropFeature,
-  selectionFeature,
-  syncDataLoaderFeature,
-} from "@headless-tree/core";
+import { dragAndDropFeature, hotkeysCoreFeature, keyboardDragAndDropFeature, selectionFeature, syncDataLoaderFeature } from "@headless-tree/core";
 import { AssistiveTreeDescription, useTree } from "@headless-tree/react";
 
 import { Tree, TreeItem, TreeItemLabel } from "@/components/tree";
@@ -15,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 import { SquarePen } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
+import { noteStore } from "@/lib/store/note-store";
 
 interface Item {
   name: string;
@@ -52,10 +47,7 @@ const createItems = (notes: Note[], folders: Folder[]) => {
       id: "root",
       name: "root",
       icon: "",
-      children: [
-        ...rootFolders.map((folder) => folder.id),
-        ...rootNotes.map((note) => note.id),
-      ],
+      children: [...rootFolders.map((folder) => folder.id), ...rootNotes.map((note) => note.id)],
     },
     items: itemMap,
   };
@@ -63,21 +55,11 @@ const createItems = (notes: Note[], folders: Folder[]) => {
 
 const indent = 20;
 
-export const TreeSidebar = ({
-  notes,
-  folders,
-  refetch,
-}: {
-  notes: Note[];
-  folders: Folder[];
-  refetch: () => void;
-}) => {
-  const updateFolderIdForNotes = repoStore(
-    (state) => state.repo.notes.updateFolderIdForNotes
-  );
-  const updateFolderIdForFolders = repoStore(
-    (state) => state.repo.folder.updateFolderIdForFolders
-  );
+export const TreeSidebar = ({ notes, folders, refetch }: { notes: Note[]; folders: Folder[]; refetch: () => void }) => {
+  const updateFolderIdForNotes = repoStore((state) => state.repo.notes.updateFolderIdForNotes);
+  const updateFolderIdForFolders = repoStore((state) => state.repo.folder.updateFolderIdForFolders);
+
+  const setShowUpdateFolder = noteStore((state) => state.setShowUpdateFolder);
 
   const { bookId } = useParams();
   const navigate = useNavigate();
@@ -142,14 +124,9 @@ export const TreeSidebar = ({
         }
 
         const filteredNotes = notes.filter((note) => note.folder_id === itemId);
-        const filteredFolders = folders.filter(
-          (folder) => folder.parent_folder_id === itemId
-        );
+        const filteredFolders = folders.filter((folder) => folder.parent_folder_id === itemId);
 
-        return [
-          ...filteredFolders.map((folder) => folder.id),
-          ...filteredNotes.map((note) => note.id),
-        ];
+        return [...filteredFolders.map((folder) => folder.id), ...filteredNotes.map((note) => note.id)];
       },
     },
     onPrimaryAction: (item) => {
@@ -159,13 +136,7 @@ export const TreeSidebar = ({
 
       navigate(`/${bookId}/${item.getItemData().id}`);
     },
-    features: [
-      syncDataLoaderFeature,
-      selectionFeature,
-      hotkeysCoreFeature,
-      dragAndDropFeature,
-      keyboardDragAndDropFeature,
-    ],
+    features: [syncDataLoaderFeature, selectionFeature, hotkeysCoreFeature, dragAndDropFeature, keyboardDragAndDropFeature],
   });
 
   useEffect(() => {
@@ -184,21 +155,30 @@ export const TreeSidebar = ({
           <TreeItem
             key={item.getId()}
             item={item}
-            className={cn("pb-0! hover:bg-sidebar-accent!", {
+            className={cn("pb-0! relative hover:bg-sidebar-accent! [&:hover_.dropdown-trigger]:opacity-100", {
               "bg-sidebar-accent!": item.isSelected(),
             })}
           >
-            <TreeItemLabel className="rounded-none py-1.5">
-              <span className="flex items-center gap-2 w-full [&:hover_.dropdown-trigger]:opacity-100">
+            <TreeItemLabel className="rounded-none py-1.5 flex-1">
+              <span className="flex items-center gap-2 w-full ">
                 <span>{item.getItemData().icon}</span>
                 <span className="flex-1 text-start">{item.getItemName()}</span>
-                {item.isFolder() && (
-                  <button className="dropdown-trigger opacity-0 transition-opacity duration-200 p-1 hover:bg-accent rounded-sm">
-                    <SquarePen className="h-4 w-4" />
-                  </button>
-                )}
               </span>
             </TreeItemLabel>
+
+            {item.isFolder() && (
+              <div className="px-2 grid place-items-center absolute right-0 top-0 bottom-0">
+                <button
+                  className="dropdown-trigger opacity-0 transition-opacity duration-200 p-1 rounded-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowUpdateFolder(true, item.getItemData().id);
+                  }}
+                >
+                  <SquarePen className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </TreeItem>
         );
       })}

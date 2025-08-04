@@ -38,6 +38,8 @@ export const CreateBook = () => {
   const setShowCreateBook = bookStore((state) => state.setShowCreateBook);
   const setOpen = bookStore((state) => state.setShowCreateBook);
   const repo = repoStore((state) => state.repo);
+  const bookIdToUpdate = bookStore((state) => state.bookIdToUpdate);
+  const books = bookStore((state) => state.books);
 
   const methods = useForm<CreateBookFormData>({
     defaultValues: {
@@ -51,7 +53,15 @@ export const CreateBook = () => {
   const { reset } = methods;
 
   const onSubmit: SubmitHandler<CreateBookFormData> = async (data) => {
-    await repo.books.createBook(data);
+    if (bookIdToUpdate) {
+      await repo.books.updateBook(bookIdToUpdate, {
+        name: data.name,
+        icon: data.icon,
+      });
+    } else {
+      await repo.books.createBook(data);
+    }
+
     const books = await repo.books.getBooks();
     setBooks(books);
     setShowCreateBook(false);
@@ -59,10 +69,21 @@ export const CreateBook = () => {
   };
 
   useEffect(() => {
-    if (open) {
+    if (open && !bookIdToUpdate) {
       reset();
     }
-  }, [open, reset]);
+
+    if (open && bookIdToUpdate) {
+      const book = books.find((book) => book.id === bookIdToUpdate);
+      if (book) {
+        reset({
+          name: book.name,
+          icon: book.icon,
+          is_encrypted: Boolean(book.is_encrypted),
+        });
+      }
+    }
+  }, [open, reset, bookIdToUpdate, books]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -78,25 +99,22 @@ export const CreateBook = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <Form {...methods}>
             <FormProvider {...methods}>
-              <TextFormInput
-                name="name"
-                label="Book Name"
-                placeholder="Enter book name"
-                left={<EmojiFormInput name="icon" />}
-              />
+              <TextFormInput name="name" label="Book Name" placeholder="Enter book name" left={<EmojiFormInput name="icon" />} />
             </FormProvider>
 
-            <div className="pt-5 pb-2 flex justify-end">
-              <a className="text-sm underline underline-offset-2 flex gap-1 items-center">
-                Set key phrase to enable encryption
-                <LucideArrowRight className="size-4" />
-              </a>
-            </div>
+            {!bookIdToUpdate && (
+              <div className="pt-5 pb-2 flex justify-end">
+                <a className="text-sm underline underline-offset-2 flex gap-1 items-center">
+                  Set key phrase to enable encryption
+                  <LucideArrowRight className="size-4" />
+                </a>
+              </div>
+            )}
 
             <DialogFooter className="mt-4">
-              <CheckboxFormInput name="isEncrypted" label="Encrypt Book" />
+              <CheckboxFormInput disabled={!!bookIdToUpdate} name="isEncrypted" label="Encrypt Book" />
               <div className="flex-1" />
-              <Button type="submit">Create</Button>
+              <Button type="submit">{bookIdToUpdate ? "Update" : "Create"}</Button>
             </DialogFooter>
 
             <Alert className="mt-4" variant="secondary" close={false}>
@@ -104,10 +122,7 @@ export const CreateBook = () => {
                 <AlertCircle />
               </AlertIcon>
               <AlertContent>
-                <AlertDescription>
-                  Encryption settings cannot be changed after the book is
-                  created.
-                </AlertDescription>
+                <AlertDescription>Encryption settings cannot be changed after the book is created.</AlertDescription>
               </AlertContent>
             </Alert>
           </Form>

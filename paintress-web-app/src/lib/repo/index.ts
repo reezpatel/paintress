@@ -50,17 +50,17 @@ const createBook = async (book: Parameters<Repo["books"]["createBook"]>[0]) => {
     .executeTakeFirstOrThrow();
 };
 
-const updateBook = async (book: Parameters<Repo["books"]["updateBook"]>[0]) => {
-  return await db
-    .updateTable("books")
-    .set({
-      ...book,
-      updated_at: new Date().toISOString(),
-    })
-    .where("id", "=", book.id)
-    .returning(["id"])
-    .executeTakeFirstOrThrow();
-};
+// const updateBook = async (book: Parameters<Repo["books"]["updateBook"]>[0]) => {
+//   return await db
+//     .updateTable("books")
+//     .set({
+//       ...book,
+//       updated_at: new Date().toISOString(),
+//     })
+//     .where("id", "=", book.id)
+//     .returning(["id"])
+//     .executeTakeFirstOrThrow();
+// };
 
 const deleteBook = async (id: string) => {
   await db.deleteFrom("books").where("id", "=", id).execute();
@@ -160,6 +160,30 @@ const updateFolderIdForFolders = async (
     .execute();
 };
 
+const updateNote = async (noteId: string, note: Partial<Pick<Note, "title" | "frontmatter">>) => {
+  await db
+    .updateTable("notes")
+    .set({ ...note, updated_at: new Date().toISOString() } as Record<string, unknown>)
+    .where("id", "=", noteId)
+    .execute();
+};
+
+const updateFolder = async (folderId: string, folder: Partial<Pick<Folder, "name" | "icon">>) => {
+  await db
+    .updateTable("folders")
+    .set({ ...folder, updated_at: new Date().toISOString() } as Record<string, unknown>)
+    .where("id", "=", folderId)
+    .execute();
+};
+
+const updateBook = async (bookId: string, book: Partial<Pick<Book, "name" | "icon">>) => {
+  await db
+    .updateTable("books")
+    .set({ ...book, updated_at: new Date().toISOString() } as Record<string, unknown>)
+    .where("id", "=", bookId)
+    .execute();
+};
+
 export const createLocalRepo = (): Repo => {
   return {
     flush,
@@ -170,19 +194,21 @@ export const createLocalRepo = (): Repo => {
       getBooks,
       getBook,
       createBook,
-      updateBook,
       deleteBook,
+      updateBook,
     },
     notes: {
       getNotes,
       getNote,
       createNote,
       updateFolderIdForNotes,
+      updateNote,
     },
     folder: {
       createFolder,
       getFolders,
       updateFolderIdForFolders,
+      updateFolder,
     },
   };
 };
