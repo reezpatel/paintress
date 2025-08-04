@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Copy package files for both frontend and backend
 COPY paintress-web-app/package*.json ./paintress-web-app/
+COPY paintress-web-app/yarn.lock ./paintress-web-app/
 COPY paintress-server/pyproject.toml ./paintress-server/
 
 # Install Node.js dependencies
