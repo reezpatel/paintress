@@ -8,6 +8,12 @@
     },
     {
       "path": "./apps/paintress"
+    },
+    {
+      "path": "./libs/plugin/paintress-web-sqlite"
+    },
+    {
+      "path": "./libs/paintress-plugin-types"
     }
   ]
 }

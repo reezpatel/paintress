@@ -1,5 +1,10 @@
 {
   "name": "@paintress/paintress",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "tailwindcss": "^4.1.12",
+    "tw-animate-css": "^1.3.7"
+  }
 }
