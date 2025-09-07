@@ -10,10 +10,24 @@
       "path": "./apps/paintress"
     },
     {
-      "path": "./libs/plugin/paintress-web-sqlite"
+      "path": "./libs/paintress-plugin-types"
     },
     {
-      "path": "./libs/paintress-plugin-types"
+      "path": "./libs/paintress-ui"
+    },
+    {
+      "path": "./libs/plugin/plugin-base"
+    },
+    {
+      "path": "./libs/plugin/plugin-workspace"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@paintress/plugin-base": ["./libs/plugin/plugin-base/src/index.ts"],
+      "@paintress/plugin-workspace": [
+        "./libs/plugin/plugin-workspace/src/index.ts"
+      ]
+    }
+  }
 }

@@ -1,0 +1,147 @@
+{
+  "name": "@paintress/paintress",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/paintress/src",
+  "projectType": "application",
+  "tags": ["npm:private"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "vite build"
+      },
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": ["vite"]
+        }
+      ],
+      "outputs": ["{projectRoot}/dist"],
+      "configurations": {
+        "production": {
+          "command": "vite build --mode production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "vite"
+      },
+      "continuous": true,
+      "dependsOn": ["build-deps"],
+      "configurations": {
+        "development": {
+          "command": "vite --mode development"
+        },
+        "production": {
+          "command": "vite --mode production"
+        }
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "vite"
+      },
+      "continuous": true,
+      "dependsOn": ["build-deps", "@paintress/plugin-workspace:watch-deps"]
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "vite preview"
+      },
+      "continuous": true,
+      "dependsOn": ["build"],
+      "configurations": {
+        "production": {
+          "command": "vite preview --mode production"
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "build",
+        "spa": true,
+        "port": 4200
+      },
+      "continuous": true
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "vitest run"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": ["vitest"]
+        }
+      ],
+      "outputs": ["{projectRoot}/test-output"],
+      "configurations": {
+        "watch": {
+          "command": "vitest"
+        },
+        "coverage": {
+          "command": "vitest run --coverage"
+        }
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "eslint ."
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/apps/paintress/eslint.config.mjs",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ],
+      "outputs": ["{options.outputFile}"],
+      "configurations": {
+        "fix": {
+          "command": "eslint . --fix"
+        }
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/paintress",
+        "command": "tsc --noEmit"
+      },
+      "cache": true,
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": ["typescript"]
+        }
+      ]
+    },
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["^build"]
+    }
+  }
+}

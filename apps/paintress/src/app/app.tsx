@@ -1,38 +1,23 @@
-import { useState } from 'react';
-import { WorkspaceSwitcher } from '../components/workspace/workspace-switcher';
-import { Workspace } from '../types/workspace';
+import { PluginProvider } from 'react-pluggable';
+import { useApplicationContext } from './context';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { WorkspaceProvider } from './workspace';
 
-export function App() {
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(
-    null
-  );
+const routes = createBrowserRouter([
+  {
+    path: '/',
+    element: <div>Hello</div>,
+  },
+]);
 
-  const handleWorkspaceSelect = (workspace: Workspace) => {
-    setSelectedWorkspace(workspace);
-  };
-
-  if (!selectedWorkspace) {
-    return <WorkspaceSwitcher onWorkspaceSelect={handleWorkspaceSelect} />;
-  }
+export const App = () => {
+  const store = useApplicationContext((s) => s.store);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">{selectedWorkspace.name}</h1>
-          <button
-            onClick={() => setSelectedWorkspace(null)}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            Switch Workspace
-          </button>
-        </div>
-        <div className="text-center text-muted-foreground">
-          Workspace content will go here
-        </div>
-      </div>
-    </div>
+    <PluginProvider pluginStore={store}>
+      <WorkspaceProvider>
+        <RouterProvider router={routes} />
+      </WorkspaceProvider>
+    </PluginProvider>
   );
-}
-
-export default App;
+};

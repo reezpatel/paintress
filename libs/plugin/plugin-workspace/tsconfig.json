@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../plugin-base"
+    },
+    {
+      "path": "../../paintress-ui"
+    },
+    {
+      "path": "../../paintress-plugin-types"
+    },
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ],
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es2019", "dom", "dom.iterable", "esnext"]
+  }
+}

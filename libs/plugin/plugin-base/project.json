@@ -1,0 +1,9 @@
+{
+  "name": "@paintress/plugin-base",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/plugin/plugin-base/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project plugin-base --web",
+  "targets": {}
+}

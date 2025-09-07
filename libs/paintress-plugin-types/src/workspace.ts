@@ -3,9 +3,8 @@ import React from 'react';
 export type Workspace = {
   id: string;
   name: string;
-  description: string;
-  createdAt: Date;
-  updatedAt: Date;
+  icon?: string;
+  initialized: boolean;
 };
 
 export interface PaintressWorkspace {

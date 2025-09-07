@@ -19,6 +19,10 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@paintress/plugin-base': path.resolve(
+        __dirname,
+        '../../libs/plugin/plugin-base/src/index.ts'
+      ),
     },
   },
   // Uncomment this if you are using workers.
