@@ -24,7 +24,7 @@ serve(
 		hostname: process.env.HOSTNAME || '0.0.0.0',
 	},
 	(info) => {
-		console.log(`Server is running on http://${info.hostname}:${info.port}`);
+		console.log(`Server is running on http://${process.env.HOSTNAME || '0.0.0.0'}:${info.port}`);
 		migrator.migrateToLatest();
 	},
 );
