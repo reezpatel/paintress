@@ -1,0 +1,27 @@
+{
+  "name": "caramel-server",
+  "type": "module",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.3",
+    "better-sqlite3": "^12.2.0",
+    "fs-extra": "^11.3.2",
+    "hono": "^4.9.8",
+    "kysely": "^0.28.7",
+    "ulid": "^3.0.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
