@@ -15,7 +15,7 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
 		return c.json({ message: 'Unauthorized' }, 401);
 	}
 
-	const apiKey = authToken.replace('Bearer ', '').trim().slice(200);
+	const apiKey = authToken.replace('Bearer ', '').trim();
 
 	if (apiKey !== process.env.API_KEY) {
 		return c.json({ message: 'Unauthorized' }, 401);

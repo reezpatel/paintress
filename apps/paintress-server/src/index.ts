@@ -21,10 +21,10 @@ serve(
 	{
 		fetch: app.fetch,
 		port: Number(process.env.PORT) || 3000,
-		hostname: process.env.HOSTNAME || '0.0.0.0',
+		hostname: process.env.HOST || '0.0.0.0',
 	},
 	(info) => {
-		console.log(`Server is running on http://${process.env.HOSTNAME || '0.0.0.0'}:${info.port}`);
+		console.log(`Server is running on http://${process.env.HOST || '0.0.0.0'}:${info.port}`);
 		migrator.migrateToLatest();
 	},
 );
