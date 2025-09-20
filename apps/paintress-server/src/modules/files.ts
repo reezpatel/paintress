@@ -55,7 +55,7 @@ files.post('/', async (c) => {
 
 	let fileId = existingFile ? existingFile.file_id : ulid();
 
-	const { s3_path, s3_hash, file_size } = await storage.uploadFile(workspaceId, fileId, await (file as File).arrayBuffer());
+	const { s3_path, s3_hash, file_size } = await storage.uploadFile(workspaceId, filePath as string, await(file as File).arrayBuffer());
 
 	if (existingFile) {
 		await db
@@ -121,6 +121,10 @@ files.get('/file/:fileId', async (c) => {
 	}
 
 	const file = await storage.downloadFile(fileResult.s3_path);
+
+	if ('redirectTo' in file) {
+		return c.redirect(file.redirectTo, 302);
+	}
 
 	const arrayBuffer = new Uint8Array(file);
 

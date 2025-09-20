@@ -15,13 +15,13 @@ export const authMiddleware = factory.createMiddleware(async (c, next) => {
 		return c.json({ message: 'Unauthorized' }, 401);
 	}
 
-	// const workspaceId = c.req.header('x-workspace-id');
+	const apiKey = authToken.replace('Bearer ', '').trim().slice(200);
 
-	// if (!workspaceId) {
-	// 	return c.json({ error: 'Workspace ID is required' }, 400);
-	// }
+	if (apiKey !== process.env.API_KEY) {
+		return c.json({ message: 'Unauthorized' }, 401);
+	}
 
-	c.set('workspaceId', 'test-workspace-id');
+	c.set('workspaceId', '01ARZ3NDEKTSV4RRFFQ69G5FAV');
 
 	await next();
 });

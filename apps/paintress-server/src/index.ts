@@ -7,7 +7,7 @@ import { migrator } from './db/index.js';
 
 const app = new Hono();
 
-app.use('/api/*', cors({ origin: '*' }));
+app.use('/api/*', cors({ origin: process.env.CORS_ORIGIN || '*' }));
 
 const api = factory.createApp();
 
@@ -20,10 +20,11 @@ app.route('/api/v1', api);
 serve(
 	{
 		fetch: app.fetch,
-		port: 3000,
+		port: Number(process.env.PORT) || 3000,
+		hostname: process.env.HOSTNAME || '0.0.0.0',
 	},
 	(info) => {
-		console.log(`Server is running on http://localhost:${info.port}`);
+		console.log(`Server is running on http://${info.hostname}:${info.port}`);
 		migrator.migrateToLatest();
 	},
 );

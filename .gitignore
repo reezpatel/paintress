@@ -145,3 +145,8 @@ dist
 # Temporary data
 tmp/*
 !tmp/.gitkeep
+
+
+*.db
+
+*.sqlite
