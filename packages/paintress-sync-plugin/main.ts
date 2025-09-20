@@ -94,7 +94,7 @@ export default class PaintressSyncPlugin extends Plugin {
 
 		const repo = new Repo(api_host, api_key);
 		this.connectionMonitor = new ConnectionMonitor(repo);
-		this.fileHistory = new LocalFileHistory();
+		this.fileHistory = new LocalFileHistory(this);
 
 		const localFs = new LocalFileSystem(this, this.settingsController, this.fileHistory);
 		const remoteFs = new RemoteFileSystem(repo, this.settingsController);

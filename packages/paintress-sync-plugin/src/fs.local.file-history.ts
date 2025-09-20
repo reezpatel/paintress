@@ -1,5 +1,4 @@
-import { promises as fs } from 'fs';
-import * as path from 'path';
+import { Plugin } from 'obsidian';
 
 export type FileHistory = {
 	deletedAt: number;
@@ -13,23 +12,16 @@ export class LocalFileHistory {
 	private filePath: string;
 	private data: FileHistoryData = {};
 
-	constructor() {
-		this.filePath = path.join('.paintress', 'file-history.json');
-		this.loadData();
-	}
+	constructor(private plugin: Plugin) {
+		this.filePath = '.paintress/file-history.json';
 
-	private async ensureDirectory(): Promise<void> {
-		const dir = path.dirname(this.filePath);
-		try {
-			await fs.mkdir(dir, { recursive: true });
-		} catch (error) {
-			// Directory already exists or other error
-		}
+		this.plugin.app.vault.adapter.mkdir('.paintress');
+		this.loadData();
 	}
 
 	private async loadData(): Promise<void> {
 		try {
-			const fileContent = await fs.readFile(this.filePath, 'utf-8');
+			const fileContent = await this.plugin.app.vault.adapter.read(this.filePath);
 			this.data = JSON.parse(fileContent);
 		} catch (error) {
 			// File doesn't exist or is invalid, start with empty data
@@ -38,10 +30,9 @@ export class LocalFileHistory {
 	}
 
 	private async saveData(): Promise<void> {
-		await this.ensureDirectory();
 		try {
 			const fileContent = JSON.stringify(this.data, null, 2);
-			await fs.writeFile(this.filePath, fileContent, 'utf-8');
+			await this.plugin.app.vault.adapter.write(this.filePath, fileContent);
 		} catch (error) {
 			console.error('Failed to save file history:', error);
 		}
