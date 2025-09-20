@@ -23,9 +23,9 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h1', { text: 'Vittey Sync' });
+		containerEl.createEl('h1', { text: 'Paintress Sync' });
 		const description = containerEl.createDiv();
-		description.createEl('h2', { text: 'Sync Obsidian with Vittey Server' });
+		description.createEl('h2', { text: 'Sync Obsidian with Paintress Server' });
 
 		new Setting(containerEl)
 			.setName('Enabled')
@@ -75,7 +75,7 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc('The host and key of the API')
 			.addText((text) =>
 				text
-					.setPlaceholder('https://app.vittey.com')
+					.setPlaceholder('https://app.paintress.com')
 					.setValue(this.settingsController.settings.api_host)
 					.onChange(async (value) => {
 						await this.settingsController.updateSettings({ api_host: value });
@@ -126,7 +126,7 @@ export class SettingTab extends PluginSettingTab {
 
 		s.addExtraButton((button) =>
 			button.setIcon('external-link').onClick(async () => {
-				window.open('https://app.vittey.com/settings/api-key');
+				window.open('https://app.paintress.com/settings/api-key');
 			}),
 		);
 
@@ -260,7 +260,7 @@ export class SettingTab extends PluginSettingTab {
 		};
 
 		const p1 = disclaimerDiv.createEl('p', {
-			text: 'This plugin is not affiliated with Obsidian. It is a third-party plugin that allows you to sync your Obsidian notes with a vittey server.',
+			text: 'This plugin is not affiliated with Obsidian. It is a third-party plugin that allows you to sync your Obsidian notes with a paintress server.',
 		});
 		const p3 = disclaimerDiv.createEl('p', {
 			text: 'Please make sure you have a backup of your notes before using this plugin.',
@@ -270,9 +270,9 @@ export class SettingTab extends PluginSettingTab {
 		});
 
 		const a1 = disclaimerDiv.createEl('a', {
-			text: 'Vittey Sync - Before you start',
+			text: 'Paintress Sync - Before you start',
 			attr: {
-				href: 'https://docs.vittey.com/sync/before-you-start',
+				href: 'https://docs.paintress.com/sync/before-you-start',
 			},
 		});
 
@@ -288,7 +288,7 @@ export class SettingTab extends PluginSettingTab {
 			.addButton((button) => {
 				if (this.settingsController.settings.terms_accepted) {
 					button
-						.setButtonText('Vittey Sync is ready...')
+						.setButtonText('Paintress Sync is ready...')
 						.setDisabled(true)
 						.onClick(async () => {
 							await this.settingsController.updateSettings({ terms_accepted: true });
@@ -303,7 +303,7 @@ export class SettingTab extends PluginSettingTab {
 			})
 			.addExtraButton((button) =>
 				button.setIcon('external-link').onClick(async () => {
-					window.open('https://docs.vittey.com/sync/before-you-start');
+					window.open('https://docs.paintress.com/sync/before-you-start');
 				}),
 			);
 

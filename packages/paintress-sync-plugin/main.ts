@@ -10,7 +10,7 @@ import { Repo } from 'src/repo';
 import { SettingsController } from 'src/settings-controller';
 import { SyncController } from 'src/sync-controller';
 
-export default class CaramelSyncPlugin extends Plugin {
+export default class PaintressSyncPlugin extends Plugin {
 	settingsController: SettingsController;
 	syncController: SyncController | null = null;
 	connectionMonitor: ConnectionMonitor | null = null;
@@ -88,7 +88,7 @@ export default class CaramelSyncPlugin extends Plugin {
 		const { api_host, api_key } = this.settingsController.settings;
 
 		if (!api_host || !api_key) {
-			console.warn('Caramel Sync: API host or key not configured');
+			console.warn('Paintress Sync: API host or key not configured');
 			return;
 		}
 
@@ -109,21 +109,21 @@ export default class CaramelSyncPlugin extends Plugin {
 
 		if (!this.settingsController.settings.enabled) {
 			if (opt.showNotice) {
-				new Notice('VitteySync: Sync is not enabled', 5000);
+				new Notice('PaintressSync: Sync is not enabled', 5000);
 			}
 			return;
 		}
 
 		if (this.syncing) {
 			if (opt.showNotice) {
-				new Notice('VitteySync: Sync is already running', 5000);
+				new Notice('PaintressSync: Sync is already running', 5000);
 			}
 			return;
 		}
 
 		if (!this.settingsController.settings.terms_accepted) {
 			if (opt.showNotice) {
-				new Notice('VitteySync: Can not sync, terms are not accepted', 5000);
+				new Notice('PaintressSync: Can not sync, terms are not accepted', 5000);
 			}
 			return;
 		}
@@ -134,7 +134,7 @@ export default class CaramelSyncPlugin extends Plugin {
 			await this.syncController?.sync();
 			this.setStatusBarItemAsNotSyncing();
 		} catch (error) {
-			console.error('Caramel Sync: Error syncing', error);
+			console.error('Paintress Sync: Error syncing', error);
 			this.setStatusBarItemAsError();
 		} finally {
 			this.syncing = false;

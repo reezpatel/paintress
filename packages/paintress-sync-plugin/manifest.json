@@ -1,9 +1,9 @@
 {
-	"id": "caramel-sync",
-	"name": "Caramel Sync",
+	"id": "paintress-sync",
+	"name": "Paintress Sync",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Sync your obsidian vault with caramel server",
+	"description": "Sync your obsidian vault with paintress server",
 	"author": "Reez",
 	"authorUrl": "https://github.com/reezpatel",
 	"fundingUrl": "",

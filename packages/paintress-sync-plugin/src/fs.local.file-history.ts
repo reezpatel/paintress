@@ -14,7 +14,7 @@ export class LocalFileHistory {
 	private data: FileHistoryData = {};
 
 	constructor() {
-		this.filePath = path.join('.vittey', 'file-history.json');
+		this.filePath = path.join('.paintress', 'file-history.json');
 		this.loadData();
 	}
 

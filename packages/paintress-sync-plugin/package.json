@@ -1,7 +1,7 @@
 {
-	"name": "caramel-sync",
+	"name": "paintress-sync",
 	"version": "1.0.0",
-	"description": "Sync your obsidian vault with caramel server",
+	"description": "Sync your obsidian vault with paintress server",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

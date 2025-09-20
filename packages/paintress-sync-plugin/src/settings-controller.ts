@@ -2,7 +2,7 @@ import { Plugin } from 'obsidian';
 
 export type ConflictResolutionStrategy = 'ignore' | 'latest' | 'oldest' | 'always-pull' | 'always-push';
 
-export type CaramelSyncSettings = {
+export type PaintressSyncSettings = {
 	enabled: boolean;
 
 	sync_type: 'auto' | 'manual';
@@ -25,11 +25,11 @@ export type CaramelSyncSettings = {
 	last_synced_at: number;
 };
 
-export const DEFAULT_SETTINGS: CaramelSyncSettings = {
+export const DEFAULT_SETTINGS: PaintressSyncSettings = {
 	enabled: true,
 	sync_type: 'auto',
 	sync_interval: 30000,
-	api_host: 'https://app.vittey.com',
+	api_host: 'https://app.paintress.com',
 	api_key: '',
 	encryption_key: '',
 
@@ -40,7 +40,7 @@ export const DEFAULT_SETTINGS: CaramelSyncSettings = {
 
 	resolution_strategies: [],
 
-	exclude_globs: './vittey/file-history.db',
+	exclude_globs: './paintress/file-history.db',
 
 	terms_accepted: false,
 
@@ -49,14 +49,14 @@ export const DEFAULT_SETTINGS: CaramelSyncSettings = {
 
 export class SettingsController {
 	private plugin: Plugin;
-	private _settings: CaramelSyncSettings;
+	private _settings: PaintressSyncSettings;
 
 	constructor(plugin: Plugin) {
 		this.plugin = plugin;
 		this._settings = { ...DEFAULT_SETTINGS };
 	}
 
-	get settings(): CaramelSyncSettings {
+	get settings(): PaintressSyncSettings {
 		return this._settings;
 	}
 
@@ -69,7 +69,7 @@ export class SettingsController {
 		await this.plugin.saveData(this._settings);
 	}
 
-	async updateSettings(newSettings: Partial<CaramelSyncSettings>): Promise<void> {
+	async updateSettings(newSettings: Partial<PaintressSyncSettings>): Promise<void> {
 		this._settings = Object.assign(this._settings, newSettings);
 		await this.saveSettings();
 	}
