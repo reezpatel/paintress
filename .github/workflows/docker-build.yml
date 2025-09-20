@@ -6,6 +6,8 @@ on:
             - main
         paths:
             - 'apps/paintress-server/**'
+            - 'package.json'
+            - 'yarn.lock'
             - '.github/workflows/docker-build.yml'
     release:
         types: [published]
@@ -51,7 +53,7 @@ jobs:
             - name: Build and push Docker image
               uses: docker/build-push-action@v5
               with:
-                  context: ./apps/paintress-server
+                  context: .
                   file: ./apps/paintress-server/dockerfile
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}

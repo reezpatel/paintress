@@ -3,8 +3,8 @@ version: '3.8'
 services:
     paintress-server:
         build:
-            context: ./apps/paintress-server
-            dockerfile: dockerfile
+            context: .
+            dockerfile: ./apps/paintress-server/dockerfile
         ports:
             - '3000:3000'
         env_file:

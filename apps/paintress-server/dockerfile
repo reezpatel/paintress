@@ -3,21 +3,18 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install yarn globally
-RUN npm install -g yarn
-
 # Copy workspace package files (from monorepo root)
-COPY ../../package.json ./
-COPY ../../yarn.lock ./
+COPY package.json ./
+COPY yarn.lock ./
 
 # Copy app-specific package.json
-COPY package.json ./apps/paintress-server/
+COPY apps/paintress-server/package.json ./apps/paintress-server/
 
 # Install dependencies for entire workspace
 RUN yarn install --frozen-lockfile
 
 # Copy source code
-COPY . ./apps/paintress-server/
+COPY apps/paintress-server ./apps/paintress-server/
 
 # Set working directory to the app
 WORKDIR /app/apps/paintress-server
@@ -30,15 +27,13 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Install yarn globally
-RUN npm install -g yarn
 
 # Copy workspace package files (from monorepo root)
-COPY ../../package.json ./
-COPY ../../yarn.lock ./
+COPY package.json ./
+COPY yarn.lock ./
 
 # Copy app-specific package.json
-COPY package.json ./apps/paintress-server/
+COPY apps/paintress-server/package.json ./apps/paintress-server/
 
 # Install only production dependencies for entire workspace
 RUN yarn install --frozen-lockfile --production && yarn cache clean
