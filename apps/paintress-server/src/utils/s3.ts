@@ -47,7 +47,7 @@ export class S3Storage extends Storage {
 				Key: s3_path,
 			}),
 			{
-				expiresIn: 60 * 60 * 24 * 30,
+				expiresIn: 60 * 60 * 24, // 1 day
 			},
 		);
 
