@@ -4,7 +4,7 @@ import type { Database } from './db.js';
 import { _0001_init_files } from './migrations/0001_init_files.js';
 
 const dialect = new SqliteDialect({
-	database: new SQLite('db.sqlite'),
+	database: new SQLite(process.env.SQLITE_DB_PATH || 'db.sqlite'),
 });
 
 export const db = new Kysely<Database>({

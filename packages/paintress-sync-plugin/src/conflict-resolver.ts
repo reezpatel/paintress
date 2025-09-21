@@ -8,7 +8,10 @@ export class ConflictResolver {
 	}
 
 	resolve(hostFile: FileMetadata, remoteFile: FileMetadata, hostFileContent: string, remoteFileContent: string) {
-		return reconcile(hostFileContent, hostFileContent, remoteFileContent).text;
+		const oldFile = hostFile.updatedAt < remoteFile.updatedAt ? hostFileContent : remoteFileContent;
+		const newFile = hostFile.updatedAt < remoteFile.updatedAt ? remoteFileContent : hostFileContent;
+
+		return reconcile(oldFile, oldFile, newFile).text;
 	}
 
 	private getExtension(file: FileMetadata) {
