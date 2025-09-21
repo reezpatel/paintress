@@ -29,11 +29,12 @@ export class SyncController {
 
 		const actions = await this.createSyncAction(hostFiles, remoteFiles);
 
+		console.log('[SyncController] Current Status: ', { hostFiles, remoteFiles });
 		console.log('[SyncController] Last Synced At: ', { lastSyncedAt: this.last_synced_at, now });
 		console.log('[SyncController] Created actions: ', actions);
 
 		for (const action of actions) {
-			await this.applySyncAction(action);
+			await this.applySyncAction(action, now);
 		}
 
 		this.settings.updateSettings({ last_synced_at: now });
@@ -47,7 +48,7 @@ export class SyncController {
 		};
 	}
 
-	private async applySyncAction(action: SyncAction) {
+	private async applySyncAction(action: SyncAction, now: number) {
 		switch (action.action) {
 			case 'prune': {
 				if (action.hostFile) {
@@ -73,8 +74,8 @@ export class SyncController {
 
 					if (updatedData) {
 						// Always do remote first
-						await this.remote.update(action.remoteFile.path, updatedData, action.remoteFile.updatedAt, Date.now());
-						await this.host.update(action.hostFile.path, updatedData, action.hostFile.updatedAt, Date.now());
+						await this.remote.update(action.remoteFile.path, updatedData, action.remoteFile.updatedAt, now);
+						await this.host.update(action.hostFile.path, updatedData, action.hostFile.updatedAt, now);
 					}
 				}
 				break;
