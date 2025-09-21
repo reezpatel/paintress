@@ -134,6 +134,9 @@ export default class PaintressSyncPlugin extends Plugin {
 			await this.syncController?.sync();
 			this.setStatusBarItemAsNotSyncing();
 		} catch (error) {
+			console.log(error);
+			console.log(error?.stack);
+			console.log(error?.message);
 			console.error('Paintress Sync: Error syncing', error);
 			this.setStatusBarItemAsError();
 		} finally {
