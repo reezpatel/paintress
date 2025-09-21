@@ -73,8 +73,8 @@ export class SyncController {
 
 					if (updatedData) {
 						// Always do remote first
-						await this.remote.update(action.remoteFile.path, updatedData, action.remoteFile.updatedAt, this.last_synced_at);
-						await this.host.update(action.hostFile.path, updatedData, action.hostFile.updatedAt, this.last_synced_at);
+						await this.remote.update(action.remoteFile.path, updatedData, action.remoteFile.updatedAt, Date.now());
+						await this.host.update(action.hostFile.path, updatedData, action.hostFile.updatedAt, Date.now());
 					}
 				}
 				break;
