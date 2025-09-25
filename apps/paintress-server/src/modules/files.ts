@@ -38,7 +38,7 @@ files.post('/', async (c) => {
 		return c.json({ error: 'File has been updated since the last sync' }, 400);
 	}
 
-	if (isDeleted === 'true') {
+	if ((typeof isDeleted === 'string' && isDeleted === 'true') || (typeof isDeleted === 'boolean' && isDeleted)) {
 		if (!existingFile) {
 			return c.json({ error: 'File does not exist' }, 400);
 		}
@@ -51,6 +51,8 @@ files.post('/', async (c) => {
 			.where('file_path', '=', filePath as string)
 			.where('workspace_id', '=', workspaceId)
 			.execute();
+
+		return c.json({ success: true });
 	}
 
 	let fileId = existingFile ? existingFile.file_id : ulid();
