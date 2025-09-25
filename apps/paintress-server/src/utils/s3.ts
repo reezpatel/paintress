@@ -33,6 +33,10 @@ export class S3Storage extends Storage {
 	}
 
 	async deleteFile(s3_path: string): Promise<void> {
+		if (!s3_path) {
+			return;
+		}
+
 		await this.s3Client.deleteObject({
 			Bucket: process.env.S3_BUCKET_NAME,
 			Key: s3_path,
@@ -40,6 +44,10 @@ export class S3Storage extends Storage {
 	}
 
 	async downloadFile(s3_path: string): Promise<{ redirectTo: string }> {
+		if (!s3_path) {
+			throw new Error('S3 path is required');
+		}
+
 		const res = await getSignedUrl(
 			this.s3Client,
 			new GetObjectCommand({
