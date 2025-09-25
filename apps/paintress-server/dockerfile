@@ -44,14 +44,6 @@ COPY --from=builder /app/apps/paintress-server/dist ./apps/paintress-server/dist
 # Set working directory to the app
 WORKDIR /app/apps/paintress-server
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
-# Change ownership of the app directory
-RUN chown -R nodejs:nodejs /app
-USER nodejs
-
 # Expose port
 EXPOSE 3000
 
